@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  back:
+    build:
+      context: .
+      args:
+        - ARG_STAGE=${STAGE}
+        - ARG_COMMAND=${COMMAND}
+    restart: always
+    volumes:
+      - .:/app/back:z
+      - /app/back/node_modules
+    ports:
+      - 8080:8080
+    depends_on:
+      - mongoDB
+
+  mongoDB:
+    image: mongo
+    restart: always
+    logging:
+      driver: none
+    ports:
+      - 27017:27017
+
+  adminMongo:
+    image: mrvautin/adminmongo
+    ports:
+      - 1234:1234
+    command: >
+      sh -c "echo -n '{\"app\":{\"host\":\"0.0.0.0\",\"password\":\"33?3.ccG---ma::1TGDoom____Gcc88M!88\",\"port\":1234}}' > ./config/app.json && npm start"
